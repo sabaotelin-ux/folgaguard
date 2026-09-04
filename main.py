@@ -2,24 +2,19 @@ import os
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from app.routers import commercial, admin
-from app.services.db import create_pro_license
+from app.routers import commercial, admin, webhook
 from app.services.qwen_support import get_qwen_support_response
 from app.services.ratelimit import check_rate_limit
 from app.services.metrics import log_request
 
-app = FastAPI(title="Aegis Gate", version="2.3.0")
+app = FastAPI(title="Aegis Gate", version="2.4.0")
 
 app.include_router(commercial.router)
 app.include_router(admin.router)
+app.include_router(webhook.router)
 
 class SupportQuery(BaseModel):
     query: str
-
-class PaymentNotification(BaseModel):
-    status: str
-    customer_email: str
-    tier: str = "pro_enterprise"
 
 @app.get("/", response_class=HTMLResponse)
 async def read_index():
@@ -79,16 +74,3 @@ async def qwen_support(payload: SupportQuery):
     except Exception as e:
         log_request("/support/qwen", 500)
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/webhook/payment")
-async def payment_webhook(payload: PaymentNotification):
-    if payload.status.lower() in ["approved", "succeeded", "paid"]:
-        new_key = create_pro_license(payload.tier)
-        log_request("/webhook/payment", 200)
-        return {
-            "status": "success",
-            "message": "Pagamento confirmado. Licença Pro gerada com sucesso.",
-            "license_key": new_key,
-            "customer": payload.customer_email
-        }
-    raise HTTPException(status_code=400, detail="Status de pagamento inválido ou não aprovado.")
