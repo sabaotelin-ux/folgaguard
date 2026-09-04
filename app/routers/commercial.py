@@ -1,20 +1,33 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from app.services.license import verify_commercial_license
+from app.services.license import verify_pro_license
+from app.services.guardrails import evaluate_guardrails
 
-class AuditRequest(BaseModel):
+router = APIRouter(prefix="/api/v1/pro", tags=["Commercial Pro"])
+
+class AdvancedAuditRequest(BaseModel):
     text_content: str
-    ruleset: str = "default"
-
-router = APIRouter(prefix="/api/v1/pro", tags=["Recursos Comerciais"])
+    ruleset: str = "strict"
 
 @router.post("/advanced-audit")
-async def run_advanced_audit(payload: AuditRequest, license_info: dict = Depends(verify_commercial_license)):
-    # Lógica exclusiva de auditoria avançada / processamento pago
+async def advanced_audit(
+    payload: AdvancedAuditRequest, 
+    license_data: dict = Depends(verify_pro_license)
+):
+    # Aplica os guardrails de segurança
+    if not evaluate_guardrails(payload.text_content):
+        raise HTTPException(
+            status_code=400,
+            detail="Conteúdo bloqueado pelos filtros de segurança do Aegis Gate (Guardrails)."
+        )
+        
     return {
         "status": "success",
-        "message": "Auditoria avançada executada com sucesso.",
-        "tier_utilizado": license_info["tier"],
-        "dados_analisados_tamanho": len(payload.text_content),
-        "ruleset_aplicado": payload.ruleset
+        "tier": license_data["tier"],
+        "audit_report": {
+            "ruleset": payload.ruleset,
+            "threats_detected": 0,
+            "compliance": "approved",
+            "message": "Conteúdo auditado com sucesso pela camada corporativa do Aegis Gate."
+        }
     }
