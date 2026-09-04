@@ -7,7 +7,7 @@ from app.services.qwen_support import get_qwen_support_response
 from app.services.ratelimit import check_rate_limit
 from app.services.metrics import log_request
 
-app = FastAPI(title="Aegis Gate", version="2.4.0")
+app = FastAPI(title="Aegis Gate", version="2.5.0")
 
 app.include_router(commercial.router)
 app.include_router(admin.router)
