@@ -9,9 +9,9 @@ from app.services.qwen_support import get_qwen_support_response
 from app.services.ratelimit import check_rate_limit
 from app.services.metrics import log_request
 
-app = FastAPI(title="Aegis Gate", version="2.6.0")
+app = FastAPI(title="Aegis Gate", version="2.6.1")
 
-app.include_router(commercial.router)
+app.include_router(commercial.router, prefix="/api/v1/pro")
 app.include_router(admin.router)
 
 DB_PATH = "aegis_licenses.db"
