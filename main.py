@@ -1,11 +1,12 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from app.routers import commercial
 from app.services.qwen_support import get_qwen_support_response
+from app.services.ratelimit import check_rate_limit
 
-app = FastAPI(title="Aegis Gate", version="2.0.0")
+app = FastAPI(title="Aegis Gate", version="2.1.0")
 
 app.include_router(commercial.router)
 
@@ -52,7 +53,7 @@ async def read_index():
                     body: JSON.stringify({ query: query })
                 });
                 const data = await res.json();
-                box.innerText = data.response || JSON.stringify(data);
+                box.innerText = data.response || data.detail || JSON.stringify(data);
             } catch (err) {
                 box.innerText = "Erro ao conectar com o servidor: " + err;
             }
@@ -61,7 +62,7 @@ async def read_index():
 </body>
 </html>"""
 
-@app.post("/support/qwen")
+@app.post("/support/qwen", dependencies=[Depends(check_rate_limit)])
 async def qwen_support(payload: SupportQuery):
     try:
         response_text = await get_qwen_support_response(payload.query)
