@@ -2,13 +2,15 @@ import os
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from app.routers import commercial
+from app.routers import commercial, admin
 from app.services.qwen_support import get_qwen_support_response
 from app.services.ratelimit import check_rate_limit
+from app.services.metrics import log_request
 
 app = FastAPI(title="Aegis Gate", version="2.1.0")
 
 app.include_router(commercial.router)
+app.include_router(admin.router)
 
 class SupportQuery(BaseModel):
     query: str
@@ -66,6 +68,8 @@ async def read_index():
 async def qwen_support(payload: SupportQuery):
     try:
         response_text = await get_qwen_support_response(payload.query)
+        log_request("/support/qwen", 200)
         return {"response": response_text}
     except Exception as e:
+        log_request("/support/qwen", 500)
         raise HTTPException(status_code=500, detail=str(e))
