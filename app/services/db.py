@@ -34,3 +34,17 @@ def check_license_db(api_key: str):
     if row and row[1] == 1:
         return {"valid": True, "tier": row[0]}
     return {"valid": False, "tier": None}
+import uuid
+
+def create_pro_license(tier: str = "pro_enterprise"):
+    init_db()
+    key = f"AEGIS-PRO-{uuid.uuid4().hex[:12].upper()}"
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO licenses (key, tier, active)
+        VALUES (?, ?, 1)
+    ''', (key, tier))
+    conn.commit()
+    conn.close()
+    return key

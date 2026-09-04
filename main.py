@@ -2,15 +2,16 @@ import os
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from app.routers import commercial, admin
+from app.routers import commercial, admin, webhook
 from app.services.qwen_support import get_qwen_support_response
 from app.services.ratelimit import check_rate_limit
 from app.services.metrics import log_request
 
-app = FastAPI(title="Aegis Gate", version="2.1.0")
+app = FastAPI(title="Aegis Gate", version="2.2.0")
 
 app.include_router(commercial.router)
 app.include_router(admin.router)
+app.include_router(webhook.router)
 
 class SupportQuery(BaseModel):
     query: str
