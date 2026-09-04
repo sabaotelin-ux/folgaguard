@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis Gate - Assistente Técnico</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
+        h2 { text-align: center; color: #38bdf8; margin-bottom: 10px; }
+        #chat-container { flex: 1; background: #1e293b; border-radius: 12px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border: 1px solid #334155; margin-bottom: 15px; }
+        .message { padding: 12px 16px; border-radius: 8px; max-width: 80%; line-height: 1.5; word-break: break-word; }
+        .user { background: #0284c7; align-self: flex-end; color: white; }
+        .assistant { background: #334155; align-self: flex-start; color: #f1f5f9; }
+        #input-container { display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 16px; outline: none; }
+        input:focus { border-color: #38bdf8; }
+        button { padding: 12px 20px; background: #0ea5e9; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0284c7; }
+        .loading { font-style: italic; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <h2>🛡️ Aegis Gate - Suporte Qwen</h2>
+    <div id="chat-container">
+        <div class="message assistant">Olá! Sou o assistente técnico especialista no Aegis Gate. Como posso ajudar você hoje?</div>
+    </div>
+    <div id="input-container">
+        <input type="text" id="query-input" placeholder="Digite sua dúvida sobre o Aegis Gate..." onkeypress="handleKey(event)">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("query-input");
+            const container = document.getElementById("chat-container");
+            const query = input.value.trim();
+            if (!query) return;
+
+            const userMsg = document.createElement("div");
+            userMsg.className = "message user";
+            userMsg.textContent = query;
+            container.appendChild(userMsg);
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+
+            const loadingMsg = document.createElement("div");
+            loadingMsg.className = "message assistant loading";
+            loadingMsg.textContent = "Pensando...";
+            container.appendChild(loadingMsg);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const response = await fetch("/support/qwen", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: query })
+                });
+                const data = await response.json();
+                container.removeChild(loadingMsg);
+
+                const botMsg = document.createElement("div");
+                botMsg.className = "message assistant";
+                botMsg.textContent = data.response || data.detail || "Erro desconhecido.";
+                container.appendChild(botMsg);
+            } catch (error) {
+                container.removeChild(loadingMsg);
+                const errorMsg = document.createElement("div");
+                errorMsg.className = "message assistant";
+                errorMsg.textContent = "Erro de conexão com o servidor.";
+                container.appendChild(errorMsg);
+            }
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleKey(e) {
+            if (e.key === "Enter") sendMessage();
+        }
+    </script>
+</body>
+</html>

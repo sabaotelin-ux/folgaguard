@@ -1,0 +1,52 @@
+[
+  {
+    "timestamp": "2026-09-03T21:09:34.693941",
+    "texto_enviado": "oi",
+    "status_code": 200,
+    "resposta": {
+      "origem": "termux-node",
+      "disponivel": true,
+      "observacao": "Não há afirmações verificáveis, contradições ou exageros no texto, pois ele contém apenas a saudação “oi” sem conteúdo jurídico ou factual."
+    }
+  },
+  {
+    "timestamp": "2026-09-03T21:09:42.698459",
+    "texto_enviado": "oi",
+    "status_code": 200,
+    "resposta": {
+      "origem": "termux-node",
+      "disponivel": true,
+      "observacao": "Não há afirmações verificáveis no texto, pois ele contém apenas a saudação “oi”. Consequentemente, não há contradições nem exageros a serem identificados. Portanto, o conteúdo é neutro e não suscita questões de veracidade."
+    }
+  },
+  {
+    "timestamp": "2026-09-03T21:09:48.635160",
+    "texto_enviado": "oi",
+    "status_code": 200,
+    "resposta": {
+      "origem": "termux-node",
+      "disponivel": true,
+      "observacao": "Não há afirmações verificáveis, contradições ou exageros no texto, pois ele contém apenas a saudação “oi”."
+    }
+  },
+  {
+    "timestamp": "2026-09-03T21:10:22.679463",
+    "texto_enviado": "h",
+    "status_code": 200,
+    "resposta": {
+      "origem": "termux-node",
+      "disponivel": true,
+      "observacao": "O texto consiste apenas na letra “h”, não contendo afirmações passíveis de verificação. Não há contradições internas nem exageros, pois não há conteúdo substantivo a ser analisado. Portanto, não é possível identificar elementos problemáticos no trecho apresentado."
+    }
+  },
+  {
+    "timestamp": "2026-09-03T21:22:57.084716",
+    "texto_enviado": "oi",
+    "status_code": 200,
+    "resposta": {
+      "origem": "termux-node",
+      "disponivel": true,
+      "observacao": "Não há afirmações verificáveis, contradições ou exageros no texto, pois ele contém apenas a saudação “oi” e não apresenta conteúdo jurídico ou factual."
+    }
+  }
+]
