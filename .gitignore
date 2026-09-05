@@ -6,3 +6,5 @@ main.py.bak
 folgaguard.db
 nohup.out
 *.log
+aegis_licenses.db
+*.db
