@@ -38,8 +38,10 @@ def avaliar_com_ia(texto: str):
             if response.status_code == 200:
                 conteudo = response.json()["choices"][0]["message"]["content"]
                 return {"provedor": "groq", "disponivel": True, "observacao": conteudo}
-        except Exception:
-            pass  # Falhou, tenta fallback
+            else:
+                return {"provedor": "erro-groq-status", "disponivel": False, "observacao": f"Status {response.status_code}: {response.text[:300]}"}
+        except Exception as e:
+            return {"provedor": "erro-groq-excecao", "disponivel": False, "observacao": str(e)}
 
     # Fallback para Gemini
     if GEMINI_API_KEY:
