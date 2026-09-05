@@ -12,8 +12,8 @@ API_KEY_SECRETA = os.getenv("FOLGAGUARD_API_KEY", "sua_chave_aqui")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
-@app.get("/debug/env")
-def debug_env():
+@app.get("/status-check")
+def status_check():
     return {
         "groq_key_existe": bool(GROQ_API_KEY),
         "groq_key_tamanho": len(GROQ_API_KEY),
